@@ -1,0 +1,30 @@
+
+FROM ubuntu:16.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN \
+ apt-get update \
+ && apt-get install -y -q curl gnupg software-properties-common \
+ && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 44FC67F19B2466EA \
+&& apt-add-repository 'deb [arch=amd64] http://repo.sawtooth.me/ubuntu/nightly xenial universe'  \
+ && apt-get update \
+ && apt-get install -y -q --no-install-recommends \
+    apt-utils \
+ && apt-get install -y -q \
+    build-essential \
+    python3-sawtooth-cli \
+    apt-transport-https \
+    ca-certificates \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    && apt-get install -y nodejs
+
+WORKDIR /project/sawtooth-helloworld/helloworldClient
+
+CMD npm install && npm start
+
+EXPOSE 3000
+
